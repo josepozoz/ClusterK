@@ -45,7 +45,7 @@ public class ClusterAssignDriver
 		FileInputFormat.addInputPath(job, new Path(args[0]));
 		FileOutputFormat.setOutputPath(job, new Path(args[2]));
 
-		// Specify the class types of the key and value produced by the mapper and reducer
+		// Specify the class types of the key and value produced by the mapper and reducer.
 		job.setOutputKeyClass(DataPoint.class);
 		job.setOutputValueClass(DataPoint.class);
 
