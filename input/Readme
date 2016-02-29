@@ -1,0 +1,19 @@
+caracteristicas de las variables
+edad    1= 18 a 30 años  
+        2= 31 a 45 años 
+        3= 46 a 60 años
+estado civil
+        1= soltero
+        2= casado
+alojamiento
+        1= propietario
+        2= arrendatario
+        3= dependiente
+nivel educativo
+        1= primaria
+        2= secundaria
+        3= universidad
+        4= postgrado
+sexo    
+        1= hombre
+        2= mujer
