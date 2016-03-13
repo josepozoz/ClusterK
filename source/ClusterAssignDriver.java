@@ -1,4 +1,4 @@
-package clusterassign;
+package source;
 
 import java.io.IOException;
 
@@ -10,42 +10,37 @@ import org.apache.hadoop.conf.Configuration;
 
 import datapoint.DataPoint;
 
-/**
-  * Driver class for the package. Initializes the MapReduce job to assign Data Points to k-Means Centroids.
-  */
+
 public class ClusterAssignDriver
 {
 	public static void main(String args[])
 		throws Exception
 	{
-		// Check if a sufficient number of arguments are provided.
-		// args[0] = Path to file containing the Data Points
-		// args[1] = Path to file containing the k-Means Centroids
-		// args[2] = Path to output file
+		
 		if(args.length != 3)
 		{
 			System.out.println("Usage: ClusterAssignDriver <Input Path> <k-Centroids File> <Output Path>");
 			System.exit(-1);
 		}
 
-		// Create a new configuration and add the path to the k-Means Centroid file as a parameter
+	
 		Configuration configuration = new Configuration();
 		configuration.set("kCentroidsFile", args[1]);
 
-		// Set up the job
+		
 		Job job = new Job(configuration);
 		job.setJarByClass(ClusterAssignDriver.class);
 		job.setJobName("K-Means Clustering - Cluster Assignment");
 
-		// Set the Mapper and Reducer class
+		// Ajuste el Mapper y la clase Reductor
 		job.setMapperClass(ClusterAssignMapper.class);
 		job.setReducerClass(ClusterAssignReducer.class);
 
-		// Set paths for input and output files
+		// caminos definidos para archivos de entrada y salida
 		FileInputFormat.addInputPath(job, new Path(args[0]));
 		FileOutputFormat.setOutputPath(job, new Path(args[2]));
 
-		// Specify the class types of the key and value produced by the mapper and reducer.
+		// Especifica los tipos de clase de la clave y el valor producido por el asignador y el reductor .
 		job.setOutputKeyClass(DataPoint.class);
 		job.setOutputValueClass(DataPoint.class);
 
