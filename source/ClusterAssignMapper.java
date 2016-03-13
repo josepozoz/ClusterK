@@ -1,4 +1,4 @@
-package clusterassign;
+package source;
 
 import java.io.IOException;
 import java.io.BufferedReader;
@@ -15,36 +15,28 @@ import org.apache.hadoop.conf.Configuration;
 import datapoint.DataPoint;
 
 /**
-  * Mapper class for the Clluster Assign step
+  * clase Mapper para el paso Asignar Cluster
   */
 public class ClusterAssignMapper extends Mapper<LongWritable, Text, DataPoint, DataPoint>
 {
-	/**
-	  * ArrayList holding the k-Means Centroids read from a file
-	  */
+	
 	public static ArrayList<DataPoint> kCentroids;
 
-	/**
-	  * Overridden setup method of Mapper class
-	  * Parameters:	Context context
-	  * Returns:	Nothing
-	  * 
-	  * Reads the file containing k-Means Centroids, parses it and loads the Centroids into the ArrayList kCentroids
-	  */
+	
 	@Override
 	public void setup(Context context)
 		throws IOException, InterruptedException
 	{
-		// Call setup of super class
+	
 		super.setup(context);
 
-		// Allocate memory for kCentroids
+		// Asignar memoria para kCentroids
 		kCentroids = new ArrayList<DataPoint>();
 
-		// Get the context's configuration
+	
 		Configuration configuration = context.getConfiguration();
 
-		// Open the file for reading
+		
 		Path path = new Path(configuration.get("fs.default.name") + configuration.get("kCentroidsFile"));
 		FileSystem filesystem = FileSystem.get(configuration);
 		BufferedReader reader = new BufferedReader(new InputStreamReader(filesystem.open(path)));
@@ -58,32 +50,20 @@ public class ClusterAssignMapper extends Mapper<LongWritable, Text, DataPoint, D
 		}
 	}
 
-	/**
-	  * Overridden map function of Mapper Class
-	  * Parameters:	LongWritable key, an offset in the file
-	  * 			Text value, Data Points in a string format
-	  *				Context context
-	  * Returns:	(key, value) pairs where
-	  *				key is a Canopy Center associated with the current Data Point
-	  *				value is the Data Point being considered
-	  * 
-	  * The function receives a (key, value) pair and nparses it.
-	  * For each k-Means Centroid in kCentroids, it calculates the centroid with the minimum distance.
-	  * It outputs the pair (K-Centroid with minimum distance, Data Point)
-	  */
+	
 	@Override 
 	public void map(LongWritable key, Text value, Context context)
 		throws IOException, InterruptedException
 	{
-		// Parse the Data Point
+		
 		DataPoint dataPoint = new DataPoint(value.toString());
 
-		// Set up variables to find the centroid with minimum distance
+	
 		double minDistance = Double.MAX_VALUE;
 		double distance;
 		int offset = -1;
 
-		// Find centroid with minimum distance
+		
 		for(int i = 0; i < kCentroids.size(); i++)
 		{
 			distance = dataPoint.complexDistance(kCentroids.get(i));
@@ -94,7 +74,7 @@ public class ClusterAssignMapper extends Mapper<LongWritable, Text, DataPoint, D
 			}
 		}
 
-		// Write the pair (Centroid, Data Point)
+		
 		context.write(kCentroids.get(offset), dataPoint);
 	}
 }
